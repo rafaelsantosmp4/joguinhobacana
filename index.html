@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="particles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz ou Morte</title>
+  <style>
+    body {
+        color: #2a2a2a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        background-image: linear-gradient(120deg, #3f0459, #37269c);
+        margin: 0;
+    }
+
+    #container {
+        background: white;
+        display: inline-block;
+        padding: 30px;
+        width: 300px;
+        border-radius: 20px;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0px 50px rgb(0, 0, 0);
+    }
+
+    #result {
+      display: none;
+    }
+
+    #quiz-container, #comeco {
+        text-align: center;
+    }
+
+    .answer {
+        width: 40%;
+        height: fit-content;
+        margin: 10px;
+    }
+    
+    img {
+        max-height: 50vh;
+        border-radius: 10px;
+    }
+
+    .answer img {
+        width: 100%;
+        height: 100px;
+        pointer-events: none;
+    }
+
+    button {
+        background-color: rgb(16, 75, 183);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: rgb(36, 109, 243);
+        color: white;
+    }
+
+    button:active {
+        background-color: rgb(243, 36, 36);
+        color: white;
+    }
+
+    video:hover {
+        cursor: pointer;
+    }
+    #particle-container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    .blur-mask {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        overflow: hidden;
+    }
+    span  {
+        cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+    <div class="blur-mask">
+        <div id="particle-container">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+    </div>
+    <div id="container">
+        <div id="comeco">
+            <h1>QUIZ RESPONDA OU SOFRA</h1>
+            <img src="https://i.pinimg.com/736x/35/90/b8/3590b8d2e6087baee9224ef9a62d895a.jpg" width="80%">
+            <h3>se errar 3 vezes vai chorar</h3>
+            <p>feito pelo noobito</p>
+            <div id="start-screen">
+                <button id="start-button">Começar</button>
+            </div>
+        </div>
+    
+        <div style="display: flex; justify-content: space-between;">
+            <div id="error-counter" style="display: none;">Erros: 0/3</div>
+            <div id="question-counter" style="display: none;">Questão: 0/10</div>
+        </div>
+    
+        <div id="quiz-container" style="display: none;">
+          <p id="question"></p>
+          <div id="putimage"></div>
+          <div>
+                <button class="answer" data-correct="false"></button>
+                <button class="answer" data-correct="false"></button>
+                <button class="answer" data-correct="false"></button>
+          </div>
+        </div>
+    
+        <div id="result" style="text-align: center;">
+          <p id="result-message"></p>
+          <button id="tweet-button" style="display: none;">Twittar mico</button>
+          <button id="reini-button" style="display: none;">Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+      const questions = [
+        {
+          question: "Qual desses é o pior?",
+          image: '',
+          answers: [
+            { text: '<img src="https://play-lh.googleusercontent.com/_n8p2F8CZytkJWw7lNkq5bntne3BiVvwyQmNQFIDTBUsVBXYdMXGb0KY8TClikRciyY">', correct: false },
+            { text: '<img src="https://play-lh.googleusercontent.com/mnDra52-ki5Pdiw0n6l35HO2fYkcRjF3YTNHTfn3SHjgqDOw54NZR_OIXoqj97xKGmv-">', correct: true },
+            { text: '<img src="https://play-lh.googleusercontent.com/EMX61fqv5FW2jW2GMnz-miMG7HSsIHqAObytJXbS-NRyW9r27K7AH9Qt-6oKVYFasQ">', correct: false },
+          ],
+        },
+        {
+          question: "Qual desses é o melhor meme do mundo?",
+          image: '',
+          answers: [
+            { text: '<img src="https://media.tenor.com/M4T6_KH_GWMAAAAM/calma-calabreso-calma-calma-calabreso.gif">', correct: false },
+            { text: '<img src="https://diariodonordeste.verdesmares.com.br/image/contentid/policy:1.3288370:1665579376/Bora-Bill.jpg?f=4x3&h=314&q=0.8&w=420&$p$f$h$q$w=6bfbfce">', correct: false },
+            { text: '<img src="https://i.pinimg.com/736x/75/4b/a9/754ba98db00eda2893f54de6e6665ced.jpg">', correct: true },
+          ],
+        },
+        {
+          question: "Valeu aí, massssss... Não. Eu já estou em um relacionamento, e a ADM é _____________. Mas eu estou sempre aberto a novas amizades.",
+          image: '',
+          answers: [
+            { text: "legal", correct: false },
+            { text: "top", correct: true },
+            { text: "feia", correct: false },
+          ],
+        },
+        {
+          question: "Qual é o nome deste rato feio?",
+          image: '<img src="https://gifdb.com/images/high/erratic-spinning-fat-rat-qkypwhe0pqpn5tz6.gif" width="80%">',
+          answers: [
+            { text: "Carlos", correct: true },
+            { text: "Astolfo", correct: false },
+            { text: "Léo", correct: false },
+          ],
+        },
+        {
+          question: "",
+          image: '<img src="https://images.voicy.network/Content/Clips/Images/197c74a8-15f8-4d63-b383-36ba74f1d295-small.jpeg" width="80%">',
+          answers: [
+            { text: "Sim", correct: false },
+            { text: "Não", correct: true },
+            { text: "Talvez", correct: false },
+          ],
+        },
+        {
+          question: 'Qual é o nome deste ursão maneiro?',
+          image: '<video id="video" onclick="this.paused ? this.play() : this.pause();" loop autoplay width="100%"><source src="https://files.catbox.moe/wyajoi.mp4" type="video/mp4"></video>',
+          answers: [
+            { text: "Carlos", correct: false },
+            { text: "Astolfo", correct: true },
+            { text: "Léo", correct: false },
+          ],
+        },
+        {
+          question: "Qual é o nome dessa música?",
+          image: '<video id="video" onclick="this.paused ? this.play() : this.pause();" loop autoplay width="100%"><source src="https://files.catbox.moe/72k6cu.mp4" type="video/mp4"></video>',
+          answers: [
+            { text: "Pabllo Vittar - K.O.", correct: false },
+            { text: "нет - Я не знаю имени", correct: false },
+            { text: "Molchat Doma - Sudno", correct: true },
+          ],
+        },
+        {
+          question: "Quem é diva?",
+          image: '<video id="video" onclick="this.paused ? this.play() : this.pause();" loop autoplay width="100%"><source src="https://files.catbox.moe/jt5ep1.mp4" type="video/mp4"></video>',
+          answers: [
+            { text: "Yaaaasss diva", correct: true },
+            { text: "Yeeeesss diva", correct: false },
+            { text: "Voooosss diva", correct: false },
+          ],
+        },
+        {
+          question: "O que deixou o mamaco assim?",
+          image: '<video id="video" onclick="this.paused ? this.play() : this.pause();" loop autoplay width="100%"><source src="https://files.catbox.moe/oily11.mp4" type="video/mp4"></video>',
+          answers: [
+            { text: "Abordagem da PM", correct: false },
+            { text: "ENEM", correct: true },
+            { text: "Nada", correct: false },
+          ],
+        },
+        {
+          question: "O que o Iberada Tenerada nos ensina nesse vídeo?",
+          image: '<img src="https://i.pinimg.com/736x/82/99/f9/8299f9ed5c021c2f99b411d591b02bee.jpg" width="80%">',
+          answers: [
+            { text: "Como fujir da Polícia Militar com 2 toneladas de cocaína", correct: false },
+            { text: "Como fujir da Polícia Federal com 2 toneladas de cocaína", correct: true },
+            { text: "Como fujir da Polícia Federal com 3 toneladas de cocaína", correct: false },
+          ],
+        },
+      ];
+
+      let currentQuestionIndex = 0;
+      let errorCount = 0;
+      acertos = 0;
+
+      const startScreen = document.getElementById("start-screen");
+      const startButton = document.getElementById("start-button");
+      const quizContainer = document.getElementById("quiz-container");
+      const questionElement = document.getElementById("question");
+      const resultContainer = document.getElementById("result");
+      const resultMessage = document.getElementById("result-message");
+      const tweetButton = document.getElementById("tweet-button");
+      const reiniButton = document.getElementById("reini-button");
+      const errorCounterElement = document.getElementById("error-counter");
+      const putimage = document.getElementById("putimage");
+      const questionCounter = document.getElementById("question-counter");
+
+      function showQuestion() {
+        const currentQuestion = questions[currentQuestionIndex];
+        questionElement.innerHTML = currentQuestion.question;
+        putimage.innerHTML = currentQuestion.image;
+
+        const answerButtons = document.querySelectorAll(".answer");
+        answerButtons.forEach((button, index) => {
+          button.innerHTML = currentQuestion.answers[index].text;
+          button.dataset.correct = currentQuestion.answers[index].correct;
+        });
+
+        quizContainer.style.display = "block";
+        questionCounter.style.display = "block";
+        resultContainer.style.display = "none";
+
+        questionCounter.innerHTML = 'Questão: '+(currentQuestionIndex + 1)+'/10';
+      }
+
+      function handleAnswerClick(event) {
+        const isCorrect = event.target.dataset.correct === "true";
+
+        if (!isCorrect) {
+          errorCount++;
+          if(errorCount >= 2) {
+            errorCounterElement.style.color = 'red';
+          }
+          errorCounterElement.innerHTML = `Erros: ${errorCount}/3`;
+          resultMessage.innerHTML = "ERROU KKKKKKKKKKKKKKKKKKKKK <br><br> <img src='https://media.tenor.com/tNfwApVE9RAAAAAM/orange-cat-laughing.gif' width='95%'>";
+
+          if (errorCount >= 3) {
+            quizContainer.style.display = "none";
+            resultContainer.style.display = "block";
+
+            setTimeout(() => {
+                resultMessage.innerHTML = "ERROU 3 KKKKKKKKKKK publique sua vergonha ("+ acertos +"/10) no <span onclick=\"this.innerHTML = (this.innerHTML === 'X') ? 'Twitter' : 'X';\" style=\"color: blue;\">X</span> <br><br> <img src='https://i.pinimg.com/736x/ee/17/42/ee17423d0d791869417d112aa13b85f3.jpg' width='95%'>";
+                
+                tweetButton.style.display = "inline-block";
+                reiniButton.style.display = "inline-block";
+            }, 2000);
+          } else {
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    showQuestion();
+                }
+            }, 2000);
+          }
+            quizContainer.style.display = "none";
+            resultContainer.style.display = "block";
+        } else {
+            currentQuestionIndex++;
+            acertos++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                quizContainer.style.display = "none";
+                resultContainer.style.display = "block";
+                
+                if(acertos > 5) {
+                    resultMessage.innerHTML = "Parabéns pelo seu resultado ("+ acertos +"/10) voce ganhou bosta nenhuma. Publique seu resultado no <span onclick=\"this.innerHTML = (this.innerHTML === 'X') ? 'Twitter' : 'X';\" style=\"color: blue;\">X</span> <br><br> <img src='https://i.pinimg.com/736x/0b/a5/3e/0ba53e30fc48cdbd1cf568be6709a0e8.jpg' width='95%'>";
+                }
+                
+                tweetButton.style.display = "inline-block";
+                reiniButton.style.display = "inline-block";
+            }
+        }
+      }
+
+      function handleTweet() {
+        if(acertos < 5) {
+            tweetText = encodeURIComponent(
+            "paguei mico tentando jogar esse joguinho do noobito acertando apenas "+ acertos +"/10... Tenta você também: [link do site] 🤡"
+            );
+        } else {
+            tweetText = encodeURIComponent(
+            "amassei esse joguinho do noobito acertando "+ acertos +"/10... Tenta você também: [link do site]"
+            );
+        }
+        const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
+        window.open(tweetUrl, "_blank");
+      }
+
+      startButton.addEventListener("click", () => {
+        startScreen.style.display = "none";
+        document.querySelector('#comeco').style.display = 'none';
+        document.querySelector('#error-counter').style.display = 'block';
+        showQuestion();
+      });
+
+      document.querySelectorAll(".answer").forEach((button) => {
+        button.addEventListener("click", handleAnswerClick);
+      });
+
+      tweetButton.addEventListener("click", handleTweet);
+      reiniButton.addEventListener("click", function() {
+        window.location.reload();
+    });
+    </script>
+</body>
+</html>
