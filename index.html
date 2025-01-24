@@ -317,10 +317,20 @@
             }, 2000);
           } else {
             setTimeout(() => {
-                currentQuestionIndex++;
-                if (currentQuestionIndex < questions.length) {
-                    showQuestion();
-                }
+              currentQuestionIndex++;
+              if (currentQuestionIndex < questions.length) {
+                  showQuestion();
+              } else {
+                  quizContainer.style.display = "none";
+                  resultContainer.style.display = "block";
+                  
+                  if(acertos > 5) {
+                      resultMessage.innerHTML = "Parabéns pelo seu resultado ("+ acertos +"/10) voce ganhou bosta nenhuma. Publique seu resultado no <span onclick=\"this.innerHTML = (this.innerHTML === 'X') ? 'Twitter' : 'X';\" style=\"color: blue;\">X</span> <br><br> <img src='https://i.pinimg.com/736x/0b/a5/3e/0ba53e30fc48cdbd1cf568be6709a0e8.jpg' width='95%'>";
+                  }
+                  
+                  tweetButton.style.display = "inline-block";
+                  reiniButton.style.display = "inline-block";
+              }
             }, 2000);
           }
             quizContainer.style.display = "none";
